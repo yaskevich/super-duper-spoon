@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="meu">
+    <title>Словариус русско-польский</title>
+    <!-- <script src="../js/handlebars.js"></script> -->
+    <script src="jquery-1.11.3.min.js"></script>
+    <script src="typeahead/typeahead.bundle.js?v.1"></script>
+	<script src="pol.js"></script>
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<link rel="stylesheet" href="pure/pure-min.css">
+	<link rel="stylesheet" href="examples.css">
+	<link rel="stylesheet" href="menu.css">
+	<link rel="stylesheet" href="modal.css">
+	<link rel="stylesheet" href="pol.css">
+</head>
+<body>
+<div class="custom-menu-wrapper">
+    <div class="pure-menu custom-menu custom-menu-top">
+        <a href="#" class="pure-menu-heading custom-menu-brand">Словариус</a>
+        <a href="#" class="custom-menu-toggle" id="toggle"><s class="bar"></s><s class="bar"></s></a>
+    </div>
+    <div class="pure-menu pure-menu-horizontal pure-menu-scrollable custom-menu custom-menu-bottom custom-menu-tucked" id="tuckedMenu">
+        <div class="custom-menu-screen"></div>
+        <ul class="pure-menu-list">
+            <!-- <li class="pure-menu-item"><a href="#" class="pure-menu-link">Strona Główna</a></li> -->
+            <li class="pure-menu-item"><a href="#" id="linkabout" class="pure-menu-link">О проектусе</a></li>
+            <li class="pure-menu-item"><a href="#" id="linkcontact" class="pure-menu-link">Контактус</a></li>
+            <!-- 
+				<li class="pure-menu-item"><a href="#" class="pure-menu-link">Blog</a></li>
+				<li class="pure-menu-item"><a href="#" class="pure-menu-link">Wang</a></li>
+             -->
+			 <!-- <li class="pure-menu-item"><a href="#" id="unamelink" class="pure-menu-link"></a></li> -->
+            <li class="pure-menu-item"><a href="/logout" class="pure-menu-link">→ Выйти-с</a></li> 
+        </ul>
+    </div>
+</div>
+
+
+<div id="blockabout" class="main hidden" >
+	<!-- <h2>Прывітаннечка!</h2> -->
+	<h3>Цяжка працуем, робячы слоўнікі!11</h3>
+	<div id="lolcat"></div>
+</div>
+
+<div id="blockcontact" class="main hidden" >
+	<p>
+		e-mail: <span style="color: blue;">alyaxey.yaskevich@gmail.com</span>
+	</p>
+	<p>
+		facebook: <a href="http://www.facebook.com/alyaxey.yaskevich">fb.com/alyaxey.yaskevich</a>
+	</p>
+
+</div>
+
+<div id="blocksearch" class="main">
+    <h1>Русско-польский словарь</h1>
+	<div id="prefetch">
+		<input id="tasearch" class="typeahead" type="text" placeholder="Чё искать-то?">
+	</div>
+	<div id="entry">
+		<div id="title"></div>
+		<div id="entry_body"></div>
+	</div>
+	<div>
+		<hr/>
+		Пользователь: <span id="unamespan" style="font-weight:bold;"></span>
+	</div>
+</div>
+</body>
+</html>
