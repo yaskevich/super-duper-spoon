@@ -9,8 +9,8 @@ import passportJWT from 'passport-jwt';
 import history from 'connect-history-api-fallback';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
-import sqlite3 from 'sqlite3'
-import { open } from 'sqlite'
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
 
 dotenv.config();
 
@@ -22,6 +22,9 @@ const __package = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'
 const port = process.env.PORT || 8080;
 const secret = process.env.SECRET;
 const appName = __package?.name || String(port);
+const pathToDb = path.join(__dirname, process.env.DBPATH);
+
+const db = await open({ filename: pathToDb, driver: sqlite3.cached.Database })
 
 const strategy = new passportJWT.Strategy(
   {
@@ -58,8 +61,12 @@ app.use(compression());
 app.set('trust proxy', 1);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(history());
+// app.use(history());
 app.use(express.static('public'));
+
+app.get('/user', async (req, res) => {
+  res.send("🤵🏻");
+});
 
 app.post('/api/user/login', async (req, res) => {
   // const userData = await db.getUserData(req.body.email, req.body.password);
@@ -76,19 +83,17 @@ app.post('/api/user/login', async (req, res) => {
   // }
 });
 
-
-app.get('/api/places/:id', auth, async (req, res) => {
-  const data = await db.getFromPlaces(req.user, req.params.id, req.query);
-  if (req.query.id) {
-    const osmId = data['places']?.[0]?.['osm_node_id'];
-    if (osmId) {
-      data['places'][0]['osm'] = await db.getOSMdata(osmId);
-    }
-  } else {
-    data["stats"] = await db.getStats()
-  }
+app.get('/def.json', async (req, res) => {
+  const data = await db.all("SELECT id, title FROM triple ORDER BY RANDOM() LIMIT 10");
   res.json(data);
 });
+
+app.get('/datum.json', async (req, res) => {
+  const id = Object.keys(req.query).filter(x => Number(x))?.shift();
+  const data = await db.all("select * from triple where id = " + id);
+  res.json(data);
+});
+
 
 app.listen(port);
 console.log(`Backend is at port ${port}`);
