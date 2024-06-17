@@ -94,6 +94,28 @@ app.get('/datum.json', async (req, res) => {
   res.json(data);
 });
 
+app.get('/data.json', async (req, res) => {
+  
+  const term = Object.keys(req.query)?.shift();
+  // const id = Object.keys(req.query).filter(x => Number(x))?.shift();
+
+  const data = await db.all("select id, title, lid from triple where inform like '" + term + "' LIMIT 3");
+
+  const data2 = await db.all("select id, title, lid from triple where inform like '" + term + "%' LIMIT 2");
+
+  const data3 = await db.all("select id, title, lid from triple where insimple like '" + term + "' LIMIT 3");
+
+  const data4 = await db.all("select id, title, lid from triple where insimple like '" + term + "%' LIMIT 2");
+
+  const result = [].concat.apply([], [data, data2, data3, data4]).filter((obj1, i, arr) =>
+    arr.findIndex(obj2 => (obj2.id === obj1.id)) === i
+  );
+
+  // console.log(result);
+
+  res.json(result);
+});
+
 
 app.listen(port);
 console.log(`Backend is at port ${port}`);
