@@ -62,7 +62,7 @@ app.set('trust proxy', 1);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(history());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.get('/user', async (req, res) => {
   res.send("🤵🏻");
@@ -95,7 +95,7 @@ app.get('/datum.json', async (req, res) => {
 });
 
 app.get('/data.json', async (req, res) => {
-  
+
   const term = Object.keys(req.query)?.shift();
   // const id = Object.keys(req.query).filter(x => Number(x))?.shift();
 
@@ -116,6 +116,30 @@ app.get('/data.json', async (req, res) => {
   res.json(result);
 });
 
+
+app.get('/api/suggestions', async (req, res) => {
+
+  const term = req.query.id;
+
+  const data = await db.all("select id, title, lid from triple where inform like '" + term + "' LIMIT 3");
+
+  const ids = data.map(x => x.id);
+  const data2 = await db.all(`select id, title, lid from triple where inform like '${term}%' AND id not in (${ids.join(',')}) LIMIT 2`);
+
+  const ids2 = data2.map(x => x.id);
+
+  const data3 = await db.all(`select id, title, lid from triple where insimple like '${term}%' and id not in (${[...ids, ...ids2].join(',')}) LIMIT 3`);
+
+  const ids3 = data3.map(x => x.id);
+
+  const data4 = await db.all(`select id, title, lid from triple where insimple like '${term}%' and id not in (${[...ids, ...ids2, ...ids3].join(',')})  LIMIT 2`);
+
+  const result = [].concat.apply([], [data, data2, data3, data4]).filter((obj1, i, arr) =>
+    arr.findIndex(obj2 => (obj2.id === obj1.id)) === i
+  );
+
+  res.json(result);
+});
 
 app.listen(port);
 console.log(`Backend is at port ${port}`);
