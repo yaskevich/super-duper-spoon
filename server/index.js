@@ -141,5 +141,11 @@ app.get('/api/suggestions', async (req, res) => {
   res.json(result);
 });
 
+app.get('/api/item', async (req, res) => {
+  const id = req.query.id;
+  const data = await db.all("select * from triple where id = " + id);
+  res.json(data);
+});
+
 app.listen(port);
 console.log(`Backend is at port ${port}`);
