@@ -29,10 +29,10 @@ export default defineConfig({
     })
   ],
   server: {
-    port: Number(loadEnv('', process.cwd(), 'VITE_PORT')?.['VITE_PORT']) || 8080, 
+    port: Number(loadEnv('', process.cwd(), 'VITE_PORT')?.['VITE_PORT']) || 8080,
     proxy: {
       '/api': {
-        target: 'http://localhost:' + loadEnv('', process.cwd(), 'VITE_PROXY')?.['VITE_PROXY'] || 8081,
+        target: 'http://localhost:' + String(loadEnv('', process.cwd(), 'VITE_PROXY')?.['VITE_PROXY'] || 8081),
         changeOrigin: true,
         secure: false,
         ws: true,
