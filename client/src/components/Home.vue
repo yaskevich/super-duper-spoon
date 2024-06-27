@@ -31,9 +31,11 @@ const renderItem = (x: any) => `${x.label}  [${x.lid}]`;
 const selectItem = async (id: number) => {
   // console.log(id);
   const res = await store.get('item', id);
-  // console.log(res);
-  const body = res.body.replace(/\n/mg, "<br/>").replace(/\<c\s+c\=\"/mg, '<span style="color:').replace(/\<\/c\>/mg, '</span>');
-  selection.value = body;
+  const item = res.shift();
+  if (item?.body) {
+    const body = item.body.replace(/\n/mg, "<br/>").replace(/\<c\s+c\=\"/mg, '<span style="color:').replace(/\<\/c\>/mg, '</span>');
+    selection.value = body;
+  }
 };
 
 const getOptions = async () => {
