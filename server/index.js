@@ -137,7 +137,7 @@ app.get('/api/suggestions', async (req, res) => {
   const result = [].concat.apply([], [data, data2, data3, data4]).filter((obj1, i, arr) =>
     arr.findIndex(obj2 => (obj2.id === obj1.id)) === i
   );
-
+  // console.log(result);
   res.json(result);
 });
 
@@ -146,6 +146,14 @@ app.get('/api/item', async (req, res) => {
   const data = await db.all("select * from triple where id = " + id);
   res.json(data);
 });
+
+app.get('/api/items', async (req, res) => {
+  const ids = req.query.ids;
+  console.log('ids', ids);
+  const data = await db.all(`select * from triple where id IN (${ids.join(',')})`);
+  res.json(data);
+});
+
 
 app.listen(port);
 console.log(`Backend is at port ${port}`);
