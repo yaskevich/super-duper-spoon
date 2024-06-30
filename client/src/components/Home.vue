@@ -16,17 +16,15 @@
 
 <script setup lang="ts">
 import { ref, reactive, onBeforeMount, computed } from 'vue';
-import axios from 'axios';
 import store from '../store';
 
 store.state.token = 'test';
 
 const query = ref('');
 const options = ref([]);
-
 const selection = ref('');
 
-const renderItem = (x: any) => `${x.label}  [${x.lid}]`;
+const renderItem = (x: any) => `${x.label} [${x.lid}]`;
 
 const selectItem = async (id: number) => {
   // console.log(id);
@@ -38,6 +36,16 @@ const selectItem = async (id: number) => {
   }
 };
 
+const selectItems = async (ids: Array<number>) => {
+  // console.log(id);
+  const res = await store.get('items', null, { ids });
+  selection.value = res.map((item: any) => {
+    if (item?.body) {
+      return item.body.replace(/\n/mg, "<br/>").replace(/\<c\s+c\=\"/mg, '<span style="color:').replace(/\<\/c\>/mg, '</span>');
+    }
+  }).join('<hr/>');
+};
+
 const getOptions = async () => {
   if (query.value) {
     const res = await store.get('suggestions', query.value);
@@ -47,13 +55,14 @@ const getOptions = async () => {
       lid: item.lid
     }));
     if (res?.[0]) {
-      await selectItem(res.shift().id);
+      // console.log(res?.[0]);
+      const ids = res.filter((x: ISuggestion) => x.title === res?.[0].title)?.map((x: ISuggestion) => x.id);
+      await selectItems(ids);
     } else {
       console.log('0 for', query.value);
     }
   }
 };
-
 
 const isLoaded = ref(false);
 // const datum = reactive([]);
