@@ -26,6 +26,10 @@ const pathToDb = path.join(__dirname, process.env.DBPATH);
 
 const db = await open({ filename: pathToDb, driver: sqlite3.cached.Database })
 
+const getUserDataByID = async (id) => {
+  return { id }
+};
+
 const strategy = new passportJWT.Strategy(
   {
     // jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -35,8 +39,7 @@ const strategy = new passportJWT.Strategy(
     ]),
     secretOrKey: secret,
   },
-  (jwtPayload, done) => db
-    .getUserDataByID(jwtPayload.sub)
+  (jwtPayload, done) => getUserDataByID(jwtPayload.sub)
     .then((user) => done(null, user))
     .catch((err) => done(err))
 );
@@ -68,19 +71,28 @@ app.get('/user', async (req, res) => {
   res.send("🤵🏻");
 });
 
+app.get('/api/user/info', auth, async (req, res) => {
+  res.json({
+    ...req.user,
+    // ...info,
+    token: issueToken(req.user),
+  });
+});
+
+
 app.post('/api/user/login', async (req, res) => {
-  // const userData = await db.getUserData(req.body.email, req.body.password);
-  // if (userData && Object.keys(userData).length && !userData?.error) {
-  //   console.log(req.body.email, '<SUCCESS>');
-  //   res.json({
-  //     ...userData,
-  //     ...info,
-  //     token: issueToken(userData),
-  //   });
-  // } else {
-  //   console.log(`login attempt as [${req.body.email}]•[${req.body.password}]►${userData.error}◄`);
-  //   res.json(userData);
-  // }
+  const userData = (req.body.email === process.env.APPUSER && req.body.password === process.env.APPPWD) ? { id: 1 } : null;
+  console.log("userData", userData, req.body.email, process.env.APPUSER, req.body.password, process.env.APPPWD);
+  if (userData && Object.keys(userData).length && !userData?.error) {
+    console.log(req.body.email, '<SUCCESS>');
+    res.json({
+      ...userData,
+      token: issueToken(userData),
+    });
+  } else {
+    console.log(`login attempt as [${req.body.email}]•[${req.body.password}]►${userData.error}◄`);
+    res.json(userData);
+  }
 });
 
 app.get('/def.json', async (req, res) => {
@@ -117,7 +129,7 @@ app.get('/data.json', async (req, res) => {
 });
 
 
-app.get('/api/suggestions', async (req, res) => {
+app.get('/api/suggestions', auth, async (req, res) => {
 
   const term = req.query.id;
 
@@ -141,19 +153,18 @@ app.get('/api/suggestions', async (req, res) => {
   res.json(result);
 });
 
-app.get('/api/item', async (req, res) => {
+app.get('/api/item', auth, async (req, res) => {
   const id = req.query.id;
   const data = await db.all("select * from triple where id = " + id);
   res.json(data);
 });
 
-app.get('/api/items', async (req, res) => {
+app.get('/api/items', auth, async (req, res) => {
   const ids = req.query.ids;
   console.log('ids', ids);
   const data = await db.all(`select * from triple where id IN (${ids.join(',')})`);
   res.json(data);
 });
-
 
 app.listen(port);
 console.log(`Backend is at port ${port}`);
