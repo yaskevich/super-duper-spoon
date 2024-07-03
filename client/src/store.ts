@@ -34,6 +34,10 @@ const renderIcon = (icon: Component) => {
   return () => h(NIcon, null, { default: () => h(icon) });
 };
 
+const addToHistory = (word: string) => {
+  state.user?.queries.push(word);
+};
+
 const makeItem = (name: string, title: string, icon: Component) => ({
   label: () => h(RouterLink, { to: { name } }, { default: () => title }),
   key: name,
@@ -43,10 +47,12 @@ const makeItem = (name: string, title: string, icon: Component) => ({
 
 const makeMenu = () => [
   makeItem('Home', 'Home', HomeOutlined),
+  makeItem('History', 'History', ListAltOutlined),
+
   // makeItem('Texts', 'Тексты', InputOutlined),
-  makeItem('Places', 'Places', AccountTreeOutlined),
-  makeItem('Users', 'Users', PersonSearchOutlined),
-  
+  // makeItem('Places', 'Places', AccountTreeOutlined),
+  // makeItem('Users', 'Users', PersonSearchOutlined),
+
   // makeItem('Flow', 'Objects', SelectAllOutlined),
   // {
   //   label: 'Management',
@@ -56,7 +62,7 @@ const makeMenu = () => [
   //     makeItem('Upload', 'Upload', CloudUploadOutlined),
   //     makeItem('Map', 'Map', MapOutlined),
   //     makeItem('Scheme', 'Scheme', AccountTreeOutlined),
-      
+
   //     makeItem('Logs', 'Logs', FormatListBulletedOutlined),
   //     makeItem('Settings', 'Settings', ListAltOutlined),
   //   ],
@@ -118,7 +124,7 @@ const logoutUser = () => {
   // router.replace('/login');
 };
 
-const get = async (route: string, id: string | null = '', data: Object = {}): Promise<any> => {
+const get = async (route: string, id: string | number | null = '', data: Object = {}): Promise<any> => {
   if (state.token) {
     try {
       // console.log("data", data);
@@ -192,7 +198,7 @@ const setUser = (data: IUser) => {
     localStorage.setItem('token', data.token);
     state.token = data.token;
   }
-  state.user = { ...state.user, ...data };
+  state.user = { ...state.user, ...data, queries: [] };
 };
 
 const getUser = async () => {
@@ -257,4 +263,5 @@ export default {
   setUser,
   convertArrayToObject,
   initMenu,
+  addToHistory,
 };

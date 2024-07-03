@@ -18,8 +18,6 @@
 import { ref, reactive, onBeforeMount, computed } from 'vue';
 import store from '../store';
 
-store.state.token = 'test';
-
 const query = ref('');
 const options = ref([]);
 const selection = ref('');
@@ -30,6 +28,8 @@ const selectItem = async (id: number) => {
   // console.log(id);
   const res = await store.get('item', id);
   const item = res.shift();
+  // console.log("get", item.title);
+  store.addToHistory(item.title);
   if (item?.body) {
     const body = item.body.replace(/\n/mg, "<br/>").replace(/\<c\s+c\=\"/mg, '<span style="color:').replace(/\<\/c\>/mg, '</span>');
     selection.value = body;
