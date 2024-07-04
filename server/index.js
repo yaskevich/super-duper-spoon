@@ -26,6 +26,42 @@ const pathToDb = path.join(__dirname, process.env.DBPATH);
 
 const db = await open({ filename: pathToDb, driver: sqlite3.cached.Database })
 
+const keyboard = {
+  'q': 'й',
+  'w': 'ц',
+  'e': 'у',
+  'r': 'к',
+  't': 'е',
+  'y': 'н',
+  'u': 'г',
+  'i': 'ш',
+  'o': 'щ',
+  'p': 'з',
+  '[': 'х',
+  ']': 'ъ',
+  'a': 'ф',
+  's': 'ы',
+  'd': 'в',
+  'f': 'а',
+  'g': 'п',
+  'h': 'р',
+  'j': 'о',
+  'k': 'л',
+  'l': 'д',
+  ';': 'ж',
+  '\'': 'э',
+  'z': 'я',
+  'x': 'ч',
+  'c': 'с',
+  'v': 'м',
+  'b': 'и',
+  'n': 'т',
+  'm': 'ь',
+  ',': 'б',
+  '.': 'ю',
+  '/': '.',
+};
+
 const getUserDataByID = async (id) => {
   return { id }
 };
@@ -146,7 +182,14 @@ app.get('/api/suggestions', auth, async (req, res) => {
 
   const data4 = await db.all(`select id, title, lid from triple where insimple like '${term}%' and id not in (${[...ids, ...ids2, ...ids3].join(',')})  LIMIT 2`);
 
-  const result = [].concat.apply([], [data, data2, data3, data4]).filter((obj1, i, arr) =>
+  const ids4 = data4.map(x => x.id);
+
+  const mapped = [...term].map(x => keyboard?.[x] || x).join('');
+  console.log('mapped', mapped);
+
+  const data5 = await db.all(`select id, title, lid from triple where insimple like '${mapped}%' and id not in (${[...ids, ...ids2, ...ids3, ...ids4].join(',')})  LIMIT 2`);
+
+  const result = [].concat.apply([], [data, data2, data3, data4, data5]).filter((obj1, i, arr) =>
     arr.findIndex(obj2 => (obj2.id === obj1.id)) === i
   );
   // console.log(result);
