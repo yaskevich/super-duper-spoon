@@ -1,6 +1,6 @@
 <template>
-  <n-message-provider>
-    <template id="main" v-if="loggedIn">
+<n-message-provider>
+  <template id="main" v-if="loggedIn">
       <n-layout>
         <n-layout-header class="header">
           <n-space justify="center">
@@ -15,9 +15,9 @@
           <n-space justify="center">
             <n-button text tag="a" href="https://yaskevich.com/" target="_blank">
               <template #icon>
-                <n-icon :component="MapFilled" />
+                <n-icon :component="MenuBookFilled" />
               </template>
-              2024 &nbsp;<strong>Geoid</strong>
+              2024 &nbsp;<strong>generic dictionary</strong>
             </n-button>
           </n-space>
         </n-layout-footer>
@@ -47,7 +47,7 @@ import { MenuOption, NIcon } from 'naive-ui';
 import store from './store';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
-import { MapFilled } from '@vicons/material';
+import { MenuBookFilled } from '@vicons/material';
 
 const vuerouter = useRoute();
 const activeKey = ref<string | null>(null); // vuerouter?.name||'Home'
@@ -65,12 +65,10 @@ const processMenu = async (key: string, item: MenuOption) => {
 
 onMounted(async () => {
   await store.getUser();
-  console.log(vuerouter?.name);
+  console.log('router', vuerouter?.name);
 
-  if (store?.state?.user?.username) {
+  if (store?.state?.user?.id) {
     store.initMenu(vuerouter?.name);
-    store.state.title = store?.state?.user?.settings?.title ||
-      store.state?.user?.dir || '';
   } else {
     // const result = await store.getUnauthorized('registration');
     // access.value = result.status;
