@@ -7,6 +7,12 @@ const routes: Array<RouteRecordRaw> = [
     // component: Home,
     component: () => import('./components/Home.vue'),
   },
+  {
+    path: '/',
+    name: 'History',
+    // component: Home,
+    component: () => import('./components/History.vue'),
+  },
   ];
 
 const router = createRouter({
