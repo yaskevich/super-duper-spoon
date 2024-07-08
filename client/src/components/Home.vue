@@ -8,17 +8,22 @@
           @select="selectItem" />
         <!-- :on-update:value="getOptions"   -->
       </n-card>
-      <div v-html="selection" style="text-align: left"></div>
+      <div v-html="selection" style="text-align: left" v-if="query"></div>
     </div>
     <div v-else style="text-align: center">...loading</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onBeforeMount, computed } from 'vue';
+import { ref, reactive, onBeforeMount, computed, toRaw } from 'vue';
 import store from '../store';
+import { useRoute } from 'vue-router';
+
+const vuerouter = useRoute();
+console.log("Home", vuerouter.params);
 
 const query = ref('');
+
 const options = ref([]);
 const selection = ref('');
 
@@ -73,6 +78,10 @@ onBeforeMount(async () => {
 
   // Object.assign(datum, data);
   isLoaded.value = true;
+  if (vuerouter.params?.entry) {
+  query.value = String(vuerouter.params?.entry);
+  await getOptions();
+}
 });
 </script>
 
