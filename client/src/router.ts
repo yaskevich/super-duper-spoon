@@ -2,13 +2,14 @@ import { createRouter, createWebHistory, RouteRecordRaw, RouterScrollBehavior } 
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: '/:entry?',
+    alias: '/',
     name: 'Home',
     // component: Home,
     component: () => import('./components/Home.vue'),
   },
   {
-    path: '/',
+    path: '/app/history',
     name: 'History',
     // component: Home,
     component: () => import('./components/History.vue'),
