@@ -35,6 +35,10 @@ const renderIcon = (icon: Component) => {
 };
 
 const addToHistory = (word: string) => {
+  const index = state.user?.queries.indexOf(word);
+  if (index !== undefined && index > -1) {
+    state.user?.queries.splice(index, 1);
+  }
   state.user?.queries.push(word);
 };
 
@@ -42,7 +46,7 @@ const makeItem = (name: string, title: string, icon: Component) => ({
   label: () => h(RouterLink, { to: { name } }, { default: () => title }),
   key: name,
   icon: renderIcon(icon),
-  show: !(['Settings', 'Logs', 'Users'].includes(name) && state?.user?.privs !== 1),
+  // show: !(['Settings', 'Logs', 'Users'].includes(name) && state?.user?.privs !== 1),
 });
 
 const makeMenu = () => [
