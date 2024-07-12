@@ -26,6 +26,8 @@ const pathToDb = path.join(__dirname, process.env.DBPATH);
 
 const db = await open({ filename: pathToDb, driver: sqlite3.cached.Database })
 
+const historyFilePath = path.join(__dirname, 'history.txt');
+
 const keyboard = {
   'q': 'й',
   'w': 'ц',
@@ -207,6 +209,17 @@ app.get('/api/items', auth, async (req, res) => {
   console.log('ids', ids);
   const data = await db.all(`select * from triple where id IN (${ids.join(',')})`);
   res.json(data);
+});
+
+app.post('/api/record', auth, async (req, res) => {
+  const word = req.body.word + '\n';
+  console.log('entry', word);
+  if (fs.existsSync(historyFilePath)) {
+    fs.appendFileSync(historyFilePath, word);
+  } else {
+    fs.writeFileSync(historyFilePath, word);
+  }
+  res.send('ok');
 });
 
 app.listen(port);
