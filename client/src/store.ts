@@ -34,14 +34,6 @@ const renderIcon = (icon: Component) => {
   return () => h(NIcon, null, { default: () => h(icon) });
 };
 
-const addToHistory = (word: string) => {
-  const index = state.user?.queries.indexOf(word);
-  if (index !== undefined && index > -1) {
-    state.user?.queries.splice(index, 1);
-  }
-  state.user?.queries.push(word);
-};
-
 const makeItem = (name: string, title: string, icon: Component) => ({
   label: () => h(RouterLink, { to: { name } }, { default: () => title }),
   key: name,
@@ -251,6 +243,15 @@ const nest = (items: any, id = 0) =>
     });
 
 const convertArrayToObject = (arr: any) => Object.assign({}, ...arr.map((x: any) => ({ [x.id]: x })));
+
+const addToHistory = (word: string) => {
+  const index = state.user?.queries.indexOf(word);
+  if (index !== undefined && index > -1) {
+    state.user?.queries.splice(index, 1);
+  }
+  state.user?.queries.push(word);
+  post('record', { word });
+};
 
 export default {
   state,
