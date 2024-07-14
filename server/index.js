@@ -114,6 +114,7 @@ app.get('/api/user/info', auth, async (req, res) => {
     ...req.user,
     // ...info,
     token: issueToken(req.user),
+    queries: fs.readFileSync(historyFilePath, { encoding: 'utf8', flag: 'r' }).split(/\n/).map(x=> x.trim()).filter(x=>x),
   });
 });
 
