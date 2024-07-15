@@ -1,6 +1,6 @@
 <template>
-<n-message-provider>
-  <template id="main" v-if="loggedIn">
+  <n-message-provider>
+    <template id="main" v-if="loggedIn">
       <n-layout>
         <n-layout-header class="header">
           <n-space justify="center">
@@ -50,7 +50,7 @@ import Register from './components/Register.vue';
 import { MenuBookFilled } from '@vicons/material';
 
 const vuerouter = useRoute();
-const activeKey = ref<string | null>(null); // vuerouter?.name||'Home'
+const activeKey = vuerouter?.name || 'Home';
 const loggedIn = computed(() => store?.state?.token?.length);
 // const loggedIn =  true;
 const access = ref(false);
