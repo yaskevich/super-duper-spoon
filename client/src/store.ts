@@ -194,7 +194,7 @@ const setUser = (data: IUser) => {
     localStorage.setItem('token', data.token);
     state.token = data.token;
   }
-  state.user = { ...state.user, ...data, queries: [] };
+  state.user = { ...state.user, ...data };
 };
 
 const getUser = async () => {
