@@ -54,6 +54,11 @@ const selectItems = async (ids: Array<number>) => {
 const getOptions = async () => {
   if (query.value) {
     const res = await store.get('suggestions', query.value);
+
+    if (!res?.length) {
+      return;
+    }
+
     options.value = res.map((item: any) => ({
       label: `${item.title}`,
       value: item.id,
@@ -61,7 +66,7 @@ const getOptions = async () => {
     }));
     if (res?.[0]) {
       // console.log(res?.[0]);
-      const ids = res.filter((x: ISuggestion) => x.title === res?.[0].title)?.map((x: ISuggestion) => x.id);
+      const ids = res.filter((x: ISuggestion) => x.title.toLocaleLowerCase() === res?.[0].title.toLocaleLowerCase())?.map((x: ISuggestion) => x.id);
       await selectItems(ids);
     } else {
       console.log('0 for', query.value);
@@ -79,9 +84,9 @@ onBeforeMount(async () => {
   // Object.assign(datum, data);
   isLoaded.value = true;
   if (vuerouter.params?.entry) {
-  query.value = String(vuerouter.params?.entry);
-  await getOptions();
-}
+    query.value = String(vuerouter.params?.entry);
+    await getOptions();
+  }
 });
 </script>
 
