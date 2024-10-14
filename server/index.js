@@ -86,12 +86,13 @@ const issueToken = (user) => jwt.sign(
   {
     iss: appName,
     sub: user.id,
-    iat: new Date().getTime(),
-    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 1,
+    // iat: new Date().getTime(),
+    // exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 1,
     // iat: Math.floor(Date.now() / 1000),
     // exp: new Date().setDate(new Date().getDate() + 1),
   },
-  secret
+  secret,
+  { expiresIn: '1y' }
 );
 
 passport.use(strategy);
@@ -114,7 +115,7 @@ app.get('/api/user/info', auth, async (req, res) => {
     ...req.user,
     // ...info,
     token: issueToken(req.user),
-    queries: fs.readFileSync(historyFilePath, { encoding: 'utf8', flag: 'r' }).split(/\n/).map(x=> x.trim()).filter(x=>x),
+    queries: fs.readFileSync(historyFilePath, { encoding: 'utf8', flag: 'r' }).split(/\n/).map(x => x.trim()).filter(x => x),
   });
 });
 
