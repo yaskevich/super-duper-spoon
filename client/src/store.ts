@@ -245,12 +245,14 @@ const nest = (items: any, id = 0) =>
 const convertArrayToObject = (arr: any) => Object.assign({}, ...arr.map((x: any) => ({ [x.id]: x })));
 
 const addToHistory = (word: string) => {
-  const index = state.user?.queries.indexOf(word);
+  const index = state.user?.queries?.indexOf(word);
   if (index !== undefined && index > -1) {
     state.user?.queries.splice(index, 1);
   }
-  state.user?.queries.push(word);
-  post('record', { word });
+  if (state.user?.queries) {
+    state.user.queries.push(word);
+    post('record', { word });
+  }
 };
 
 export default {
