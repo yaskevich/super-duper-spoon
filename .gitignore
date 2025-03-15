@@ -1,5 +1,10 @@
 /data
 /log
-/node_modules
+dist/
+node_modules/
 .env
 package-lock.json
+client/components.d.ts
+client/auto-imports.d.ts
+dev-dist/
+server/history.txt
